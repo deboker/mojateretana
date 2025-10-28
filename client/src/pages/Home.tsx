@@ -509,7 +509,7 @@ export default function Home() {
 
             <Card className="border-2 border-primary hover:shadow-2xl transition-all relative">
               <div className="absolute -top-4 left-1/2 -translate-x-1/2 bg-primary text-white px-6 py-1.5 rounded-full text-sm font-bold">
-                UŠTEDIŠ 10 EUR
+                UŠTEDIŠ 1000 RSD
               </div>
               <CardHeader className="text-center pb-8">
                 <CardTitle className="text-2xl mb-2">Pretplatna karta</CardTitle>
