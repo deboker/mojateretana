@@ -29,7 +29,7 @@ export default function Home() {
       <header className="fixed top-0 left-0 right-0 bg-white/95 backdrop-blur-sm border-b border-border z-50">
         <div className="container mx-auto px-4 py-4 flex items-center justify-between">
           <div className="flex items-center gap-2">
-            <img src="/logo.svg" alt="Moja teretana" className="h-8 w-8" />
+            <img src="/svgviewer-output.svg" alt="Moja teretana" className="h-8 w-8" />
             <span className="font-bold text-xl">Moja teretana</span>
           </div>
           <nav className="hidden md:flex items-center gap-6">
@@ -898,7 +898,7 @@ export default function Home() {
           <div className="grid md:grid-cols-4 gap-8 mb-8">
             <div>
               <div className="flex items-center gap-2 mb-4">
-                <img src="/logo.svg" alt="Moja teretana" className="h-8 w-8" />
+                <img src="/svgviewer-output.svg" alt="Moja teretana" className="h-8 w-8" />
                 <span className="font-bold text-lg">Moja teretana</span>
               </div>
               <p className="text-sm opacity-80">
