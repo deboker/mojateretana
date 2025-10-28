@@ -160,6 +160,11 @@
     padding-right: 1rem;
   }
 
+  /* Square aspect ratio for all object-cover images */
+  .object-cover {
+    aspect-ratio: 1 / 1;
+  }
+
   @media (min-width: 640px) {
     .container {
       padding-left: 1.5rem; /* 24px - tablet padding */
