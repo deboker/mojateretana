@@ -472,7 +472,7 @@ export default function Home() {
             <Card className="border-2 hover:border-primary/50 transition-all hover:shadow-xl">
               <CardHeader className="text-center pb-8">
                 <CardTitle className="text-2xl mb-2">Jednokratni ulaz</CardTitle>
-                <div className="text-5xl font-bold text-primary mb-2">10 EUR</div>
+                <div className="text-5xl font-bold text-primary mb-2">1000 RSD</div>
                 <p className="text-muted-foreground">75 minuta</p>
               </CardHeader>
               <CardContent>
@@ -513,8 +513,8 @@ export default function Home() {
               </div>
               <CardHeader className="text-center pb-8">
                 <CardTitle className="text-2xl mb-2">Pretplatna karta</CardTitle>
-                <div className="text-5xl font-bold text-primary mb-2">90 EUR</div>
-                <p className="text-muted-foreground">10 ulaza (9 EUR/ulaz)</p>
+                <div className="text-5xl font-bold text-primary mb-2">9000 RSD</div>
+                <p className="text-muted-foreground">10 ulaza (900 RSD/ulaz)</p>
               </CardHeader>
               <CardContent>
                 <ul className="space-y-3 mb-6">
