@@ -85,7 +85,7 @@ export default function Home() {
                   <div className="w-8 h-8 rounded-full bg-green-100 flex items-center justify-center flex-shrink-0">
                     <CheckCircle2 className="h-5 w-5 text-green-600" />
                   </div>
-                  <span className="text-sm font-medium">Samo 10 EUR</span>
+                  <span className="text-sm font-medium">Samo 1000 RSD</span>
                 </div>
               </div>
 
