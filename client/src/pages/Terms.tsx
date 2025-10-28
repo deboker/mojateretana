@@ -68,8 +68,8 @@ export default function Terms() {
 
             <h3 className="text-xl font-semibold mb-3 mt-6">4.2 Plaćanje</h3>
             <p className="text-muted-foreground leading-relaxed">
-              Plaćanje se vrši online karticom prilikom rezervacije. Cena za jednu rezervaciju (75 minuta) je 10 EUR.
-              Pri kupovini pretplatne karte (10 ulaza) cena je 90 EUR.
+              Plaćanje se vrši online karticom prilikom rezervacije. Cena za jednu rezervaciju (75 minuta) je 1000 RSD.
+              Pri kupovini pretplatne karte (10 ulaza) cena je 9000 RSD.
             </p>
 
             <h3 className="text-xl font-semibold mb-3 mt-6">4.3 Otkazivanje rezervacije</h3>
