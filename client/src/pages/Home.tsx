@@ -33,7 +33,7 @@ export default function Home() {
             <span className="font-bold text-xl">Moja teretana</span>
           </div>
           <nav className="hidden md:flex items-center gap-6">
-            <a href="#prednost" className="text-sm hover:text-primary transition-colors">Prednosti</a>
+            <a href="#prednosti" className="text-sm hover:text-primary transition-colors">Prednosti</a>
             <a href="#oprema" className="text-sm hover:text-primary transition-colors">Oprema</a>
             <a href="#cenovnik" className="text-sm hover:text-primary transition-colors">Cenovnik</a>
             <a href="#kontakt" className="text-sm hover:text-primary transition-colors">Kontakt</a>
