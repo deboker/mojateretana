@@ -1,8 +1,24 @@
 import { Button } from "@/components/ui/button";
 import { ArrowLeft } from "lucide-react";
 import { Link } from "wouter";
+import { useEffect, useState } from "react";
+import { fetchPageBySlug, getStrapiMediaUrl, type PageContent } from "@/services/strapi";
 
 export default function Terms() {
+  const [page, setPage] = useState<PageContent | null>(null);
+  const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    const loadPage = async () => {
+      setLoading(true);
+      const data = await fetchPageBySlug('terms');
+      setPage(data);
+      setLoading(false);
+    };
+
+    loadPage();
+  }, []);
+
   return (
     <div className="min-h-screen bg-white">
       {/* Header */}
@@ -19,8 +35,34 @@ export default function Terms() {
 
       {/* Content */}
       <main className="container mx-auto px-4 py-12 max-w-4xl">
-        <h1 className="text-4xl font-bold mb-8">Uslovi korišćenja</h1>
+        {loading ? (
+          <div className="text-center py-12">
+            <p className="text-muted-foreground">Učitavanje...</p>
+          </div>
+        ) : page ? (
+          <>
+            <h1 className="text-4xl font-bold mb-8">{page.title}</h1>
+            {page.image && (
+              <img
+                src={getStrapiMediaUrl(page.image.url)}
+                alt={page.image.alternativeText || page.title}
+                className="w-full max-w-2xl mx-auto mb-8 rounded-lg shadow-lg"
+              />
+            )}
+            <div
+              className="prose prose-lg max-w-none space-y-6"
+              dangerouslySetInnerHTML={{ __html: page.content }}
+            />
+          </>
+        ) : (
+          <div className="text-center py-12">
+            <h1 className="text-4xl font-bold mb-4">Stránka nebola nájdená</h1>
+            <p className="text-muted-foreground">Obsah stránky nie je k dispozícii.</p>
+          </div>
+        )}
 
+        {/* Fallback static content - hidden by default */}
+        {!loading && !page && (
         <div className="prose prose-lg max-w-none space-y-6">
           <section>
             <h2 className="text-2xl font-bold mb-4">1. Opšte odredbe</h2>
@@ -175,6 +217,7 @@ export default function Terms() {
             </p>
           </section>
         </div>
+        )}
       </main>
     </div>
   );

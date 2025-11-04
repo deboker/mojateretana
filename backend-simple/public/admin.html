@@ -1,0 +1,213 @@
+<!DOCTYPE html>
+<html lang="sk">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Admin Panel - Moja Teretana CMS</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://unpkg.com/@tinymce/tinymce-webcomponent@2/dist/tinymce-webcomponent.min.js"></script>
+</head>
+<body class="bg-gray-50">
+    <div class="min-h-screen">
+        <!-- Header -->
+        <header class="bg-white shadow-sm border-b">
+            <div class="container mx-auto px-4 py-4">
+                <h1 class="text-2xl font-bold">Admin Panel - Moja Teretana</h1>
+                <p class="text-sm text-gray-600">Upravujte obsah svojej webstránky</p>
+            </div>
+        </header>
+
+        <!-- Main Content -->
+        <div class="container mx-auto px-4 py-8">
+            <div class="grid md:grid-cols-4 gap-6">
+                <!-- Sidebar - Pages List -->
+                <div class="md:col-span-1">
+                    <div class="bg-white rounded-lg shadow p-4">
+                        <h2 class="font-bold text-lg mb-4">Stránky</h2>
+                        <ul id="pagesList" class="space-y-2">
+                            <!-- Pages will be loaded here -->
+                        </ul>
+                    </div>
+                </div>
+
+                <!-- Editor -->
+                <div class="md:col-span-3">
+                    <div id="editorContainer" class="bg-white rounded-lg shadow p-6">
+                        <div class="mb-6">
+                            <h2 class="text-xl font-bold mb-4">Upraviť stránku</h2>
+                            <p class="text-gray-600 mb-4">Vyberte stránku z ľavej strany pre úpravu</p>
+                        </div>
+
+                        <form id="pageForm" class="hidden space-y-4">
+                            <input type="hidden" id="pageId" />
+
+                            <div>
+                                <label class="block text-sm font-medium mb-2">Názov stránky</label>
+                                <input type="text" id="pageTitle" class="w-full px-4 py-2 border rounded-lg" required />
+                            </div>
+
+                            <div>
+                                <label class="block text-sm font-medium mb-2">Slug (URL)</label>
+                                <input type="text" id="pageSlug" class="w-full px-4 py-2 border rounded-lg bg-gray-100" readonly />
+                            </div>
+
+                            <div>
+                                <label class="block text-sm font-medium mb-2">Obsah</label>
+                                <textarea id="pageContent" rows="15" class="w-full px-4 py-2 border rounded-lg font-mono text-sm"></textarea>
+                                <p class="text-xs text-gray-500 mt-1">Podporuje HTML formátovanie</p>
+                            </div>
+
+                            <div>
+                                <label class="block text-sm font-medium mb-2">Obrázok</label>
+                                <input type="file" id="pageImage" accept="image/*" class="w-full px-4 py-2 border rounded-lg" />
+                                <div id="currentImage" class="mt-2"></div>
+                            </div>
+
+                            <div class="flex gap-4 pt-4">
+                                <button type="submit" class="bg-blue-600 text-white px-6 py-2 rounded-lg hover:bg-blue-700">
+                                    Uložiť zmeny
+                                </button>
+                                <button type="button" onclick="loadPages()" class="bg-gray-200 text-gray-700 px-6 py-2 rounded-lg hover:bg-gray-300">
+                                    Zrušiť
+                                </button>
+                            </div>
+                        </form>
+                    </div>
+
+                    <!-- Success/Error Messages -->
+                    <div id="message" class="hidden mt-4 p-4 rounded-lg"></div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        const API_URL = 'http://localhost:1337';
+
+        // Load all pages
+        async function loadPages() {
+            try {
+                const response = await fetch(`${API_URL}/api/pages`);
+                const result = await response.json();
+
+                const pagesList = document.getElementById('pagesList');
+                pagesList.innerHTML = result.data.map(page => `
+                    <li>
+                        <button
+                            onclick="loadPage(${page.id})"
+                            class="w-full text-left px-3 py-2 rounded hover:bg-gray-100 transition"
+                        >
+                            ${page.attributes.title}
+                        </button>
+                    </li>
+                `).join('');
+            } catch (error) {
+                showMessage('Chyba pri načítaní stránok', 'error');
+            }
+        }
+
+        // Load specific page
+        async function loadPage(id) {
+            try {
+                const response = await fetch(`${API_URL}/api/pages/${id}`);
+                const result = await response.json();
+                const page = result.data.attributes;
+
+                document.getElementById('pageForm').classList.remove('hidden');
+                document.getElementById('pageId').value = result.data.id;
+                document.getElementById('pageTitle').value = page.title;
+                document.getElementById('pageSlug').value = page.slug;
+                document.getElementById('pageContent').value = page.content;
+
+                // Show current image if exists
+                if (page.image) {
+                    document.getElementById('currentImage').innerHTML = `
+                        <img src="${API_URL}${page.image.url}" alt="${page.image.alternativeText || ''}"
+                             class="w-32 h-32 object-cover rounded" />
+                    `;
+                } else {
+                    document.getElementById('currentImage').innerHTML = '';
+                }
+            } catch (error) {
+                showMessage('Chyba pri načítaní stránky', 'error');
+            }
+        }
+
+        // Save page
+        document.getElementById('pageForm').addEventListener('submit', async (e) => {
+            e.preventDefault();
+
+            const id = document.getElementById('pageId').value;
+            const title = document.getElementById('pageTitle').value;
+            const content = document.getElementById('pageContent').value;
+            const imageFile = document.getElementById('pageImage').files[0];
+
+            try {
+                // Upload image if provided
+                let imageData = null;
+                if (imageFile) {
+                    const formData = new FormData();
+                    formData.append('files', imageFile);
+
+                    const uploadResponse = await fetch(`${API_URL}/api/upload`, {
+                        method: 'POST',
+                        body: formData
+                    });
+
+                    if (uploadResponse.ok) {
+                        const uploadResult = await uploadResponse.json();
+                        imageData = uploadResult[0];
+                    }
+                }
+
+                // Update page
+                const updateData = {
+                    data: {
+                        title,
+                        content
+                    }
+                };
+
+                if (imageData) {
+                    updateData.data.image = imageData;
+                }
+
+                const response = await fetch(`${API_URL}/api/pages/${id}`, {
+                    method: 'PUT',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify(updateData)
+                });
+
+                if (response.ok) {
+                    showMessage('Stránka úspešne uložená!', 'success');
+                    loadPages();
+                    loadPage(id);
+                } else {
+                    throw new Error('Failed to update page');
+                }
+            } catch (error) {
+                showMessage('Chyba pri ukladaní stránky', 'error');
+            }
+        });
+
+        // Show message
+        function showMessage(text, type) {
+            const messageEl = document.getElementById('message');
+            messageEl.textContent = text;
+            messageEl.className = `mt-4 p-4 rounded-lg ${
+                type === 'success' ? 'bg-green-100 text-green-800' : 'bg-red-100 text-red-800'
+            }`;
+            messageEl.classList.remove('hidden');
+
+            setTimeout(() => {
+                messageEl.classList.add('hidden');
+            }, 5000);
+        }
+
+        // Initialize
+        loadPages();
+    </script>
+</body>
+</html>
